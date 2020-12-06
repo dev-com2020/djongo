@@ -1,16 +1,16 @@
-from django.http import JsonResponse
+from django.http.response import JsonResponse
 from rest_framework import status
 from rest_framework.decorators import api_view
 from rest_framework.parsers import JSONParser
 
-from DjangoRestApiMongoDB.tutorials.models import Tutorials
-from DjangoRestApiMongoDB.tutorials.serializers import TutorialSerializer
+from .models import Tutorials
+from .serializers import TutorialSerializer
 
 
 @api_view(['GET', 'POST', 'DELETE'])
 def tutorial_list(request):
     if request.method == 'GET':
-        tutorials = Tutorials.object.all()
+        tutorials = Tutorials.objects.all()
 
         title = request.GET.get('title', None)
         if title is not None:
@@ -28,13 +28,13 @@ def tutorial_list(request):
         return JsonResponse(tutorial_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     elif request.method == 'DELETE':
-        count = Tutorials.object.all().delete()
+        count = Tutorials.objects.all().delete()
         return JsonResponse({'message:''{} Tutorial skasowany poprawnie'.format(count[0])}, status=status.HTTP_204_NO_CONTENT)
 
 @api_view(['GET', 'PUT', 'DELETE'])
 def tutorial_detail(request, pk):
     try:
-        tutorial = Tutorials.object.get(pk=pk)
+        tutorial = Tutorials.objects.get(pk=pk)
     except Tutorials.DoesNotExist:
         return JsonResponse({'message:''Wybrany tutorial nie istnieje'},status=status.HTTP_404_NOT_FOUND)
 
@@ -55,7 +55,7 @@ def tutorial_detail(request, pk):
 
 @api_view(['GET'])
 def tutorial_list_published(request):
-    tutorials = Tutorials.object.filter(published=True)
+    tutorials = Tutorials.objects.filter(published=True)
 
     if request.method == 'GET':
         tutorials_serializer = TutorialSerializer(tutorials, many=True)
