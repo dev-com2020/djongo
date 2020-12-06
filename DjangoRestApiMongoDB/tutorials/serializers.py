@@ -1,8 +1,7 @@
 from rest_framework import serializers
-from rest_framework.serializers import ModelSerializer
 from .models import Tutorials
 
-class TutorialSerializer(serializers, ModelSerializer):
+class TutorialSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Tutorials
@@ -10,5 +9,4 @@ class TutorialSerializer(serializers, ModelSerializer):
             'id',
             'title',
             'description',
-            'published'
-        )
+            'published')
